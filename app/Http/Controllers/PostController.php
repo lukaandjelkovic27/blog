@@ -40,7 +40,7 @@ class PostController extends Controller
             $post->image_path = $newImageName;
 
             $post->update();
-            return redirect(route('post.index'))->with('message', 'Post successfully added');
+            return redirect(route('posts.index'))->with('message', 'Post successfully added');
         } catch (\Exception $e){
             return back()->withErrors($e->getMessage());
         }
@@ -68,7 +68,7 @@ class PostController extends Controller
             }
             $post->update();
 
-            return redirect(route('post.index'))->with('message', 'Post updated successfully');
+            return redirect(route('posts.index'))->with('message', 'Post updated successfully');
         } catch (\Exception $e){
             return back()->withErrors($e->getMessage());
         }
@@ -79,7 +79,7 @@ class PostController extends Controller
     {
         try {
             $post->delete();
-            return redirect(route('post.index'))->with('message', 'Post deleted successfully');
+            return redirect(route('posts.index'))->with('message', 'Post deleted successfully');
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
         }

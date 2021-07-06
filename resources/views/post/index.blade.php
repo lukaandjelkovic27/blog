@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-fluid">
             @role('admin')
-                <a href="{{route('post.create')}}"><button class="btn btn-primary">Create new post</button></a>
+                <a href="{{route('posts.create')}}"><button class="btn btn-primary">Create new post</button></a>
             @endrole
 
         @foreach($posts as $post)
@@ -25,12 +25,12 @@
                                 {{$post->description}}
                             </div>
                             <div>
-                                <a href="{{route('post.show', $post->id)}}" class="btn btn-warning btn-sm">Read more</a>
+                                <a href="{{route('posts.show', $post->id)}}" class="btn btn-warning btn-sm">Read more</a>
 
                                 @role('admin')
-                                <a href="/post/{{$post->id}}/edit" class="btn btn-warning btn-sm">Edit Post</a>
+                                <a href="/posts/{{$post->id}}/edit" class="btn btn-warning btn-sm">Edit Post</a>
 
-                                <form action="/post/{{$post->id}}" method="POST">
+                                <form action="/posts/{{$post->id}}" method="POST">
                                     @csrf
                                     @method('delete')
                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>

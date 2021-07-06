@@ -14,7 +14,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <form action="{{route('comment.store')}}" method="POST">
+                <form action="{{route('comments.store')}}" method="POST">
                     @csrf
                     <input name="post_id" type="hidden" value="{{$post->id}}">
                     <textarea name="body" cols="50" rows="10" placeholder="Type your comment"></textarea>
@@ -42,12 +42,12 @@
                                         <div class="col-4">
                                             @if(auth()->id() === $comment->user_id)
                                                 <div>
-                                                    <a href="{{route('comment.edit', $comment->id)}}">
+                                                    <a href="{{route('comments.edit', $comment->id)}}">
                                                         <button class="btn btn-warning btn-sm">Edit comment</button>
                                                     </a>
                                                 </div>
                                                 <div>
-                                                    <form action="{{route('comment.destroy', $comment->id)}}" method="POST">
+                                                    <form action="{{route('comments.destroy', $comment->id)}}" method="POST">
                                                         @method('DELETE')
                                                         @csrf
                                                         <button type="submit" class="btn btn-danger btn-sm">Delete comment</button>

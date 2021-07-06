@@ -38,7 +38,7 @@ class CommentController extends Controller
         try{
             $comment->fill($request->all());
             $comment->update();
-            return redirect(route('post.show', $comment->post_id))->with('message', 'Post edited');
+            return redirect(route('posts.show', $comment->post_id))->with('message', 'Post edited');
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
         }

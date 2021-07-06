@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h1>Edit Post</h1>
-        <form action="{{route('comment.update', $comment->id)}}" method="POST">
+        <form action="{{route('comments.update', $comment->id)}}" method="POST">
             @csrf
             @method('PUT')
             <div class="form-group">
