@@ -43,7 +43,7 @@
                             <a class="nav-link" href="{{ url('/') }}">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/blog') }}">Blog</a>
+                            <a class="nav-link" href="{{ url('/post') }}">Blog</a>
                         </li>
                         @guest
                             @if (Route::has('login'))
@@ -80,6 +80,23 @@
                 </div>
             </div>
         </nav>
+
+        @if (session()->has('message'))
+            <div class="alert alert-success">
+                {{session()->get('message')}}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
 
         <main class="py-4">
             @yield('content')

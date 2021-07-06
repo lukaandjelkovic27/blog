@@ -2,13 +2,8 @@
 
 @section('content')
     <div class="container-fluid">
-        @if (session()->has('message'))
-            <div class="alert alert-succes">
-                {{session()->get('message')}}
-            </div>
-        @endif
             @role('admin')
-                <a href="{{url('blog/create')}}"><button class="btn btn-primary">Create new post</button></a>
+                <a href="{{route('post.create')}}"><button class="btn btn-primary">Create new post</button></a>
             @endrole
 
         @foreach($posts as $post)
@@ -16,10 +11,9 @@
                 <div class="col-sm-4">
                     <div class="post">
                         <div class="post-img-content" style="min-width: 100px">
-                            <img src="{{asset('images/' . $post->image_path)}}" class="post-image" style="width: 100%"/>
+                            <img src="{{asset('/storage/images/' . $post->image_path)}}" class="post-image" style="width: 100%"/>
                         </div>
                         <div class="content">
-
                             <div class="card-title">
                                 <h3>{{$post->title}}</h3>
                             </div>
@@ -30,14 +24,13 @@
                             <div>
                                 {{$post->description}}
                             </div>
-
                             <div>
-                                <a href="/blog/{{$post->slug}}" class="btn btn-warning btn-sm">Read more</a>
+                                <a href="{{route('post.show', $post->id)}}" class="btn btn-warning btn-sm">Read more</a>
 
                                 @role('admin')
-                                <a href="/blog/{{$post->slug}}/edit" class="btn btn-warning btn-sm">Edit Post</a>
+                                <a href="/post/{{$post->id}}/edit" class="btn btn-warning btn-sm">Edit Post</a>
 
-                                <form action="/blog/{{$post->slug}}" method="POST">
+                                <form action="/post/{{$post->id}}" method="POST">
                                     @csrf
                                     @method('delete')
                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -49,6 +42,7 @@
                     </div>
                 </div>
             </div>
-    @endforeach
+        @endforeach
+        {{ $posts->links() }}
     </div>
 @endsection

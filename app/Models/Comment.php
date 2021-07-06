@@ -2,33 +2,20 @@
 
 namespace App\Models;
 
-use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Post extends Model
+class Comment extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'title',
-        'description',
-        'image_path',
+        'body'
     ];
 
     protected $appends = [
-        'full_image_path',
         'created_before',
     ];
-
-//    protected $with = [
-//        'comments',
-//    ];
-
-    public function getFullImagePathAttribute()
-    {
-        return url('storage/images/'. $this->image_path);
-    }
 
     public function getCreatedBeforeAttribute()
     {
@@ -40,8 +27,8 @@ class Post extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function comments()
+    public function post()
     {
-        return $this->hasMany(Comment::class, 'post_id', 'id');
+        return $this->belongsTo(Post::class, 'post_id', 'id');
     }
 }

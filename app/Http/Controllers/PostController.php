@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Post\StorePost;
+use App\Http\Requests\Post\UpdatePost;
 use App\Models\Post;
-use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
-use Cviebrock\EloquentSluggable\Sluggable;
 
-// Todo change post to blog
-// Todo use try/catch
 class PostController extends Controller
 {
     public function __construct()
@@ -18,81 +16,72 @@ class PostController extends Controller
 
     public function index()
     {
+        // Todo pagination on frontend
         // Get all posts ordered by updated at
-        $posts = Post::orderBy('updated_at', 'DESC')->get();
-        return view('blog.index')->with('posts', $posts);
+        $posts = Post::orderBy('updated_at', 'DESC')->paginate(3);
+        return view('post.index')->with('posts', $posts);
     }
 
     public function create()
     {
-        return  view('blog.create');
+        return view('post.create');
     }
 
-    public function store(Request $request)
+    public function store(StorePost $request)
     {
-        // Todo move to request validation
-        $request->validate([
-           'title' => 'required',
-           'description'=> 'required',
-           'image' => 'required|mimes:jpg,png,jpeg|max:2048'
-        ]);
+        try {
+            $post = new Post;
+            $post->fill($request->all());
+            $post->user()->associate(auth()->user());
+            $post->save();
+            // Image upload
+            $newImageName = uniqid() . '-' . $request->title . '.' . $request->image->extension();
+            $request->file('image')->storeAs('images', $newImageName, 'public');
+            $post->image_path = $newImageName;
 
-        // Todo change file upload
-        $newImageName = uniqid() . '-' . $request->title . '.' . $request->image->extension();
-        $request->image->move(public_path('images'), $newImageName);
-
-        $slug = SlugService::createSlug(Post::class, 'slug', $request->title);
-
-        // Todo move post create before file upload\
-        // Todo use associate instead of create for user relation
-        // Uradi create, associate, save -> upload pa update
-        Post::create([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'slug' => $slug,
-            'image_path' => $newImageName,
-            'user_id' => auth()->user()->id
-        ]);
-
-        return redirect('blog')->with('message', 'Post successfully added');
+            $post->update();
+            return redirect(route('post.index'))->with('message', 'Post successfully added');
+        } catch (\Exception $e){
+            return back()->withErrors($e->getMessage());
+        }
     }
 
     public function show(Post $post)
     {
-        return view ('blog.show')->with('post', $post);
+        return view('post.show')->with('post', $post->load('comments'));
     }
 
-    public function edit($slug)
+    public function edit(Post $post)
     {
-        // Todo chage slug to Post model
-        $slugId = Post::where('slug', $slug)->first();
-        return view ('blog.edit')->with('post', $slugId);
+        $postId = Post::where('id', $post->id)->first();
+        return view('post.edit')->with('post', $postId);
     }
 
-
-    public function update(Request $request, $slug)
+    public function update(UpdatePost $request, Post $post)
     {
-        $request->validate([
-            'title' => 'required',
-            'description'=> 'required',
-            'image' => 'required|mimes:jpg,png,jpeg|max:2048'
-        ]);
+        try {
+            $post->fill($request->all());
+            if ($request->has('image')) {
+                $newImageName = uniqid() . '-' . $request->title . '.' . $request->image->extension(); //kako da obrisem staru sliku
+                $request->file('image')->storeAs('images', $newImageName, 'public');
+                $post->image_path = $newImageName;
+            }
+            $post->update();
 
-        Post::where('slug', $slug)
-            ->update([
-                'title' => $request->input('title'),
-                'description' => $request->input('description'),
-                'slug' => $slug,
-                /*'image_path' => $newImageName,*/
-                'user_id' => auth()->user()->id
-            ]);
+            return redirect(route('post.index'))->with('message', 'Post updated successfully');
+        } catch (\Exception $e){
+            return back()->withErrors($e->getMessage());
+        }
 
-        return redirect('blog')->with('message', 'Post updated successfully');
     }
 
     public function destroy(Post $post)
     {
-        $post->delete();
-        return redirect('blog')->with('message', 'Post deleted successfully');
+        try {
+            $post->delete();
+            return redirect(route('post.index'))->with('message', 'Post deleted successfully');
+        } catch (\Exception $e) {
+            return back()->withErrors($e->getMessage());
+        }
     }
 }
