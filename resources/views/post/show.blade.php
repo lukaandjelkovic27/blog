@@ -37,7 +37,7 @@
                                 <div class="media-body">
                                     <div class="row">
                                         <div class="col-8 d-flex">
-                                            <h5>{{$comment->user->name}}</h5> <span>- {{--{{Carbon\Carbon::parse($comment->created_at)->diffForHumans()}}--}}</span>
+                                            <h5>{{$comment->user->name}}</h5> <span>- {{$comment->created_before}}</span>
                                         </div>
                                         <div class="col-4">
                                             @if(auth()->id() === $comment->user_id)

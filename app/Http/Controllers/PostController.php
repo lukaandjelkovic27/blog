@@ -16,7 +16,6 @@ class PostController extends Controller
 
     public function index()
     {
-        // Todo pagination on frontend
         // Get all posts ordered by updated at
         $posts = Post::orderBy('updated_at', 'DESC')->paginate(3);
         return view('post.index')->with('posts', $posts);
@@ -72,7 +71,6 @@ class PostController extends Controller
         } catch (\Exception $e){
             return back()->withErrors($e->getMessage());
         }
-
     }
 
     public function destroy(Post $post)

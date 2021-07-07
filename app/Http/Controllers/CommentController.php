@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Comment\StoreComment;
+use App\Mail\CommentAdded;
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CommentController extends Controller
 {
@@ -21,6 +24,10 @@ class CommentController extends Controller
             $comment->user()->associate(auth()->user());
             $comment->post()->associate($request->get('post_id'));
             $comment->save();
+
+            $admin = User::where('name', '=', 'Admin')->first();
+            Mail::to($admin->email)->send(new CommentAdded($comment));
+
             return back()->with('message', 'Comment posted successfully');
         } catch (\Exception $e) {
             return back()->withErrors($e->getMessage());
