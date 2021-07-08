@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Comment extends Model
 {
     use HasFactory;
+    use Notifiable;
 
     protected $fillable = [
         'body'
@@ -15,6 +17,7 @@ class Comment extends Model
 
     protected $appends = [
         'created_before',
+        'all_post_comments',
     ];
 
     public function getCreatedBeforeAttribute()

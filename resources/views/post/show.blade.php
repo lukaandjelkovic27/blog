@@ -26,7 +26,7 @@
 
 
     <div class="container mb-5 mt-5">
-        <h3 class="text-center mb-5"> Comment Section </h3>
+        <h3 class="text-center mb-5">  Comment Section </h3>
         @foreach($post->comments as $comment)
         <div class="card">
             <div class="row">

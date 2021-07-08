@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Comment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,14 +12,15 @@ class AddedComment extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    protected $comment;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Comment $comment)
     {
-        //
+        $this->comment = $comment;
     }
 
     /**
@@ -29,7 +31,7 @@ class AddedComment extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', 'database'];
     }
 
     /**
@@ -55,7 +57,8 @@ class AddedComment extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         return [
-            //
+            'id' => $this->comment->id,
+            'body' => $this->comment->body,
         ];
     }
 }
